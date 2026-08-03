@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+*.pt
+*.mp4
+runs/
+output_images/
+debug_plates/
+all_debug_plates/
+dataset_images/
+ocr_dataset/
+test_images/
+test_images_2/
+good_plates/
+output.jpg
+.idea/
