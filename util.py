@@ -6,7 +6,12 @@ import csv
 from collections import defaultdict, Counter
 
 # initialize OCR
-reader = easyocr.Reader(['en'], gpu=False)
+reader = None
+def get_reader():
+    global reader
+    if reader is None:
+        reader = easyocr.Reader(['en'], gpu=False)
+    return reader
 
 # OCR history for temporal voting
 plate_history = defaultdict(list)
@@ -287,7 +292,7 @@ def read_license_plate(license_plate_crop):
 
     for img in versions:
 
-        detections = reader.readtext(
+        detections = get_reader().readtext(
             img,
             allowlist='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
             detail=1,

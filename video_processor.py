@@ -19,8 +19,22 @@ from util import get_car, read_license_plate, write_csv, get_best_plate
 # a YOLO model on every request would make each request take
 # several extra seconds for no reason.
 # ------------------------------------------------------------
-vehicle_detector = YOLO('yolov8n.pt')
-license_plate_detector = YOLO('best.pt')
+vehicle_detector = None
+license_plate_detector = None
+
+
+def get_vehicle_detector():
+    global vehicle_detector
+    if vehicle_detector is None:
+        vehicle_detector = YOLO('yolov8n.pt')
+    return vehicle_detector
+
+
+def get_license_plate_detector():
+    global license_plate_detector
+    if license_plate_detector is None:
+        license_plate_detector = YOLO('best.pt')
+    return license_plate_detector
 
 VEHICLE_CLASSES = [2, 3, 5, 7]  # car, motorcycle, bus, truck
 
@@ -58,7 +72,7 @@ def process_video(video_path: str, output_csv_path: str = None) -> dict:
             # -------------------------
             # Vehicle Detection
             # -------------------------
-            detections = vehicle_detector(frame)[0]
+            detections = get_vehicle_detector()(frame)[0]
             detections_ = []
 
             for detection in detections.boxes.data.tolist():
@@ -74,7 +88,7 @@ def process_video(video_path: str, output_csv_path: str = None) -> dict:
             # -------------------------
             # License Plate Detection
             # -------------------------
-            license_plates = license_plate_detector(frame)[0]
+            license_plates = get_license_plate_detector()(frame)[0]
 
             for license_plate in license_plates.boxes.data.tolist():
                 x1, y1, x2, y2, score, class_id = license_plate
